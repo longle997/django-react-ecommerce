@@ -13,11 +13,14 @@ https://github.com/longle997/django-react-ecommerce/assets/71619478/e5077074-d81
 
 Client user can:
 - login/logout/create new account/forgot password.
-- View and add products in store to their cart.
+- View and add products in store to their cart
+- Searching for product in search box, products are sorting with pagination.
+- Write a comment for product.
 - View cart information.
 - Add deliver information.
 - Add Payment method information.
 - Make order and pay bill by Paypal method.
 
+
 Demo video
-https://github.com/longle997/django-react-ecommerce/assets/71619478/02456ad5-5723-407c-a4cd-e153a5ea5994
+https://github.com/longle997/django-react-ecommerce/assets/71619478/fb70137b-f550-47eb-a6fb-c603e3055a3e
