@@ -1,29 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Image, Row, Col } from "react-bootstrap";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Table from "react-bootstrap/Table";
 import { listProducts } from "../actions/productActions";
 import axios from "axios";
+import Paginate from "../components/Paginate";
 
 function ProductListScreen() {
     const productListState = useSelector((state) => state.productList);
-    const { products, error, loading } = productListState;
+    const { products, error, loading, page, pages } = productListState;
 
     const userInfoState = useSelector((state) => state.userInfo);
     const { userInfo } = userInfoState;
 
     const [deleteProductSuccessed, setdeleteProductSuccessed] = useState(false);
     const [addProductSuccessed, setAddProductSuccessed] = useState(false);
+    const location = useLocation();
 
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(listProducts());
+        dispatch(listProducts(location.search));
     }, [addProductSuccessed, deleteProductSuccessed]);
 
     const handleDelete = async (productId) => {
@@ -65,64 +67,80 @@ function ProductListScreen() {
             ) : error ? (
                 <Message variant="danger" text={error}></Message>
             ) : (
-                <Table striped bordered hover responsive className="table-sm">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Image</th>
-                            <th>Price</th>
-                            <th>Brand</th>
-                            <th>Category</th>
-                            <th>Update/Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            <tr key={product._id}>
-                                <td>{product._id}</td>
-                                <td>{product.name}</td>
-                                <td style={{ width: "12%" }}>
-                                    <Image src={product.image} fluid />
-                                </td>
-                                <td>${product.price}</td>
-                                <td>{product.brand}</td>
-                                <td>{product.category}</td>
-                                <td>
-                                    <Button className="btn-light">
-                                        <Link
-                                            to={`/admin/products/${product._id}/edit`}
-                                        >
-                                            <i className="fas fa-edit"></i>
-                                        </Link>
-                                    </Button>
-                                    <Button
-                                        className="btn-light"
-                                        style={{ marginLeft: "5px" }}
-                                    >
-                                        <Link
-                                            to={`#`}
-                                            onClick={() => {
-                                                if (
-                                                    window.confirm(
-                                                        "Are you sure to delete this record?"
-                                                    )
-                                                ) {
-                                                    handleDelete(product.id);
-                                                }
-                                            }}
-                                        >
-                                            <i
-                                                style={{ color: "red" }}
-                                                className="fa-solid fa-trash"
-                                            ></i>
-                                        </Link>
-                                    </Button>
-                                </td>
+                <div>
+                    <Table
+                        striped
+                        bordered
+                        hover
+                        responsive
+                        className="table-sm"
+                    >
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Image</th>
+                                <th>Price</th>
+                                <th>Brand</th>
+                                <th>Category</th>
+                                <th>Update/Delete</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {products.map((product) => (
+                                <tr key={product._id}>
+                                    <td>{product._id}</td>
+                                    <td>{product.name}</td>
+                                    <td style={{ width: "12%" }}>
+                                        <Image src={product.image} fluid />
+                                    </td>
+                                    <td>${product.price}</td>
+                                    <td>{product.brand}</td>
+                                    <td>{product.category}</td>
+                                    <td>
+                                        <Button className="btn-light">
+                                            <Link
+                                                to={`/admin/products/${product._id}/edit`}
+                                            >
+                                                <i className="fas fa-edit"></i>
+                                            </Link>
+                                        </Button>
+                                        <Button
+                                            className="btn-light"
+                                            style={{ marginLeft: "5px" }}
+                                        >
+                                            <Link
+                                                to={`#`}
+                                                onClick={() => {
+                                                    if (
+                                                        window.confirm(
+                                                            "Are you sure to delete this record?"
+                                                        )
+                                                    ) {
+                                                        handleDelete(
+                                                            product.id
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                <i
+                                                    style={{ color: "red" }}
+                                                    className="fa-solid fa-trash"
+                                                ></i>
+                                            </Link>
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                    <Paginate
+                        page={page}
+                        pages={pages}
+                        keyWord={location.search}
+                        isAdmin={true}
+                    />
+                </div>
             )}
         </div>
     );

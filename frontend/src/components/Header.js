@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavDropdown } from "react-bootstrap";
 import { logout } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";
+import SearchBox from "./SearchBox";
 
 function Header() {
     const userLogin = useSelector((state) => state.userInfo);
@@ -28,6 +29,7 @@ function Header() {
                         <Navbar.Brand>Proshop</Navbar.Brand>
                     </LinkContainer>
                     <Nav className="me-auto">
+                        <SearchBox />
                         <LinkContainer to="/cart">
                             <Nav.Link>
                                 <i className="fas fa-shopping-cart"></i>Cart
