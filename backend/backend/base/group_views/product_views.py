@@ -1,18 +1,42 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from ..serializers import ProductSerializer
+from ..serializers import ProductSerializer, ReviewSerializer
 from ..models import *
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 
 @api_view(['GET'])
 def get_products(request):
-    products = Product.objects.all()
-    products_serializer = ProductSerializer(products, many=True)
-    if products_serializer.data:
-        return Response(products_serializer.data)
+    key_word = request.GET.get('keyWord')
+    if key_word:
+        products = Product.objects.filter(name__icontains=key_word)
+    else:
+        products = Product.objects.all()
     
-    return Response("There are no products!")
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 2)
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+        page = None
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+    
+    if not page:
+        page = 1
+    
+    page = int(page)
+
+    products_serializer = ProductSerializer(products, many=True) if products else None        
+    
+    if products_serializer and products_serializer.data:
+        return Response({'products': products_serializer.data, 'page': page, 'pages': paginator.num_pages})
+    else:
+        return Response({'products': [], 'page': 1, 'pages': 1})
 
 @api_view(['GET'])
 def get_product(request, pk):
@@ -110,3 +134,11 @@ def create_product_review(request, pk):
     product.save()
 
     return Response('Product has been reviewed', status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_product_review(request, pk):
+    product = Product.objects.get(_id=pk)
+    reviews = Review.objects.filter(product=product)
+
+    serializer = ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)
