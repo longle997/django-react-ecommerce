@@ -1,4 +1,5 @@
-# django-react-ecommerce
+# Django React Ecommerce
+
 This application aim to help user show selling products in their store.
 Admin user can:
 - View/edit/add/delete products in store.
