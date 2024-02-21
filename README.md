@@ -25,3 +25,6 @@ Client user can:
 
 Demo video
 https://github.com/longle997/django-react-ecommerce/assets/71619478/fb70137b-f550-47eb-a6fb-c603e3055a3e
+
+Class diagram in order to show backend database system
+![image](https://github.com/longle997/django-react-ecommerce/assets/71619478/218bd5ee-634e-44c6-ac3e-75ffb6ab9277)
